@@ -29,9 +29,13 @@ public class NestedContainerRecyclerView extends RecyclerView implements NestedS
     private int itemTargetY = 0;
     private NestedScrollingParentHelper nestedScrollingParentHelper;
     private int mTouchType;
-    /** 当前显示的 recycleView */
+    /**
+     * 当前显示的 recycleView
+     */
     private WeakReference<View> targetChild;
-    /** targetChild对应的itemView */
+    /**
+     * targetChild对应的itemView
+     */
     private WeakReference<View> itemChild;
 
     private float xDistance;
@@ -92,6 +96,8 @@ public class NestedContainerRecyclerView extends RecyclerView implements NestedS
                 this.lastX = curX;
                 this.lastY = curY;
                 break;
+            default:
+                break;
         }
         return super.onInterceptTouchEvent(ev);
     }
@@ -132,11 +138,11 @@ public class NestedContainerRecyclerView extends RecyclerView implements NestedS
     /**
      * *
      *
-     * @param child 包裹target的父布局的直接子view
+     * @param child  包裹target的父布局的直接子view
      * @param target 触发滑动的view
-     * @param axes 滚动方向
-     * @param type 滑动事件类型 true：表示父控件接受该嵌套滑动事件，后续嵌套滑动事件就会通知到该父控件 当子 view
-     *     （直接或间接）调用startNestedScroll(View, int)时，会回调父控件该方法。
+     * @param axes   滚动方向
+     * @param type   滑动事件类型 true：表示父控件接受该嵌套滑动事件，后续嵌套滑动事件就会通知到该父控件 当子 view
+     *               （直接或间接）调用startNestedScroll(View, int)时，会回调父控件该方法。
      */
     @Override
     public boolean onStartNestedScroll(
@@ -151,7 +157,9 @@ public class NestedContainerRecyclerView extends RecyclerView implements NestedS
         return true;
     }
 
-    /** 滑动前的准备工作 */
+    /**
+     * 滑动前的准备工作
+     */
     @Override
     public void onNestedScrollAccepted(
             @NonNull View child, @NonNull View target, int axes, int type) {
@@ -168,8 +176,8 @@ public class NestedContainerRecyclerView extends RecyclerView implements NestedS
     }
 
     /**
-     * @param dxConsumed view 消费了x方向的距离
-     * @param dyConsumed view 消费了y方向的距离
+     * @param dxConsumed   view 消费了x方向的距离
+     * @param dyConsumed   view 消费了y方向的距离
      * @param dxUnconsumed 表示 view 剩余未消费 x 方向距离
      * @param dyUnconsumed 表示 view 剩余未消费 y 方向距离 接收子View处理完滑动后的滑动距离信息, 在这里父控件可以选择是否处理剩余的滑动距离
      */
@@ -232,21 +240,6 @@ public class NestedContainerRecyclerView extends RecyclerView implements NestedS
      */
     @Override
     public void onNestedPreScroll(@NonNull View target, int dx, int dy, int[] consumed, int type) {
-        Log.e(
-                "1myrecycle",
-                "onNestedPreScroll--"
-                        + "dy--"
-                        + dy
-                        + "--canScroll-1-"
-                        + target.canScrollVertically(1)
-                        + "--canScroll-(-1-"
-                        + target.canScrollVertically(-1)
-                        + "--this.canScroll-1-"
-                        + canScrollVertically(1)
-                        + "--this.canScroll-(-1-"
-                        + canScrollVertically(-1)
-                        + "--itemChildY--"
-                        + getItemChildY());
         if (dy != 0) {
             if (type == ViewCompat.TYPE_TOUCH && itemChild != null && itemChild.get() != null) {
                 int y = getItemChildY();
@@ -307,7 +300,9 @@ public class NestedContainerRecyclerView extends RecyclerView implements NestedS
         }
     }
 
-    /** 处于拖动状态时，会调用该方法，回调父控件的onNestedScroll方法，传递当前 view 滑动距离详情给到父控件 */
+    /**
+     * 处于拖动状态时，会调用该方法，回调父控件的onNestedScroll方法，传递当前 view 滑动距离详情给到父控件
+     */
     @Override
     public boolean dispatchNestedScroll(
             int dxConsumed,
@@ -337,7 +332,7 @@ public class NestedContainerRecyclerView extends RecyclerView implements NestedS
                 }
             }
         } else {
-            if (canScrollVertically(-1) && !targetChild.get().canScrollVertically(-1)) {
+            if (canScrollVertically(-1)) {
                 fling(0, dyUnconsumed * VELUE);
                 return true;
             }
@@ -349,7 +344,7 @@ public class NestedContainerRecyclerView extends RecyclerView implements NestedS
     @Override
     public boolean onNestedFling(View target, float velocityX, float velocityY, boolean consumed) {
         // Re-dispatch up the tree by default
-        Log.e("1myrecycle", "onNestedFling");
+//        Log.e("1myrecycle", "onNestedFling");
         if (velocityY != 0) {
             if (velocityY > 0) {
                 if ((!target.canScrollVertically(1) || getItemChildY() != itemTargetY)
